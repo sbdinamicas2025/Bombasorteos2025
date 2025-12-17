@@ -1,0 +1,2353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BombaSorteos - Sistema Multi-Rifas</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #FFE45C;
+            --accent: #FF2F73;
+            --success: #28a745;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --danger: #dc3545;
+            --light-bg: #f8f9fa;
+            --dark-text: #343a40;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark-text);
+            padding-bottom: 80px;
+        }
+        
+        /* NUEVO LOGOTIPO */
+        .brand-logo-container {
+            text-align: center;
+            padding: 15px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            margin-bottom: 25px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        @media (max-width: 768px) {
+            .brand-logo {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+        
+        .logo-icon {
+            color: white;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .logo-text {
+            text-align: left;
+        }
+        
+        @media (max-width: 768px) {
+            .logo-text {
+                text-align: center;
+            }
+        }
+        
+        .logo-title {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, #FFE45C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            letter-spacing: 0.5px;
+        }
+        
+        .logo-subtitle {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            margin-top: 3px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* NUEVO: Imagen del premio */
+        .prize-image-container {
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .prize-image-wrapper {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+        
+        .prize-image {
+            max-width: 100%;
+            max-height: 400px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border: 4px solid white;
+            object-fit: contain;
+            background: white;
+        }
+        
+        .prize-image-placeholder {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(145deg, #e9ecef, #f8f9fa);
+            border-radius: 12px;
+            border: 2px dashed #dee2e6;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .prize-image-placeholder:hover {
+            background: linear-gradient(145deg, #dee2e6, #e9ecef);
+            border-color: var(--primary);
+        }
+        
+        .prize-image-placeholder i {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            opacity: 0.6;
+        }
+        
+        .prize-image-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+        
+        .prize-image-wrapper:hover .prize-image-actions {
+            opacity: 1;
+        }
+        
+        .prize-image-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .prize-image-btn:hover {
+            background: var(--primary);
+            transform: scale(1.1);
+        }
+        
+        /* Upload Modal */
+        .upload-modal-content {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .upload-area {
+            padding: 40px 20px;
+            text-align: center;
+            border: 3px dashed #dee2e6;
+            border-radius: 12px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+        }
+        
+        .upload-area:hover, .upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(255, 107, 53, 0.05);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            opacity: 0.7;
+        }
+        
+        .upload-preview {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 15px auto;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Progress Bar for Upload */
+        .upload-progress {
+            display: none;
+            margin-top: 15px;
+        }
+        
+        .card {
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: none;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-header {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            font-weight: 700;
+            border-bottom: none;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+        }
+        
+        /* Tab Navigation */
+        .rifa-tabs {
+            margin-bottom: 20px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .rifa-tab {
+            padding: 12px 20px;
+            margin: 0 5px;
+            border: none;
+            background: none;
+            color: #6c757d;
+            font-weight: 600;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s;
+        }
+        
+        .rifa-tab:hover {
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+        
+        .rifa-tab.active {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+        }
+        
+        .rifa-tab-badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            margin-left: 5px;
+        }
+        
+        /* Grid Container - MODIFICADO PARA MOSTRAR SOLO 2 DÍGITOS */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-container {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 4px;
+            }
+        }
+        
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border: 2px solid transparent;
+        }
+        
+        .available {
+            background: linear-gradient(145deg, #e9ecef, #ffffff);
+            border-color: #dee2e6;
+            color: #495057;
+        }
+        
+        .available:hover {
+            background: linear-gradient(145deg, #dee2e6, #f1f3f5);
+            transform: scale(1.08);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .separated {
+            background: linear-gradient(145deg, var(--warning), #ffd351);
+            color: white;
+            border-color: var(--warning);
+        }
+        
+        .chosen {
+            background: linear-gradient(145deg, var(--info), #1ec3e8);
+            color: white;
+            border-color: var(--info);
+        }
+        
+        .sold {
+            background: linear-gradient(145deg, var(--success), #34ce57);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        /* NUEVO: Indicador de panel en esquina */
+        .grid-item-panel {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 0.6rem;
+            font-weight: bold;
+            background: rgba(0,0,0,0.1);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(0,0,0,0.6);
+        }
+        
+        .grid-item-number {
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        
+        /* Panel Selector */
+        .panel-selector {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .panel-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin: 0 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #e9ecef;
+            border: 2px solid #dee2e6;
+        }
+        
+        .panel-badge:hover {
+            transform: scale(1.1);
+        }
+        
+        .panel-badge.active {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .panel-badge.completed {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+        
+        /* Admin Panel */
+        .admin-toggle {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.5);
+            color: white;
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .admin-form {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 350px;
+            padding: 20px;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 99;
+            border-radius: 0 0 0 16px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .admin-panel {
+            display: none;
+            margin-bottom: 20px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            padding: 20px;
+        }
+        
+        /* Progress Bar */
+        .progress {
+            height: 22px;
+            border-radius: 11px;
+            background-color: #e9ecef;
+            overflow: hidden;
+        }
+        
+        .progress-bar-available {
+            background-color: #e9ecef;
+        }
+        
+        .progress-bar-separated {
+            background: linear-gradient(to right, var(--warning), #ffd351);
+        }
+        
+        .progress-bar-sold {
+            background: linear-gradient(to right, var(--success), #34ce57);
+        }
+        
+        /* Rifa Summary */
+        .rifa-summary {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            border: none;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-buy-now {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            font-weight: 600;
+        }
+        
+        .btn-buy-now:hover {
+            background: linear-gradient(to right, #e62967, #cc1a4f);
+        }
+        
+        /* Countdown */
+        .countdown {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+        
+        /* Floating Action */
+        .floating-action {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        
+        /* Statistics */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        
+        /* Estilos para el nuevo logo */
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo-svg {
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        .logo-title-gradient {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #FFE45C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo-subtitle-small {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <!-- NUEVO LOGOTIPO MEJORADO -->
+    <div class="brand-logo-container">
+        <div class="container">
+            <div class="brand-logo">
+                <!-- Logo SVG con caja/sorteo -->
+                <div class="logo-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="logo-icon" width="50" height="50" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 6a2 2 0 012-2h12a2 2 0 012 2v2a2 2 0 100 4v2a2 2 0 01-2 2H4a2 2 0 01-2-2v-2a2 2 0 100-4V6z" />
+                    </svg>
+                </div>
+                <!-- Texto del logo -->
+                <div class="logo-text">
+                    <h1 class="logo-title">BombaSorteos</h1>
+                    <p class="logo-subtitle">Sistema de rifas digitales</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container py-4">
+        <!-- Admin Toggle -->
+        <button class="admin-toggle" id="adminToggle">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+        
+        <!-- Admin Form -->
+        <div class="admin-form" id="adminForm">
+            <div class="mb-3">
+                <h5 class="mb-3">Acceso Administrador</h5>
+                <label for="adminCode" class="form-label">Código de Administrador:</label>
+                <input type="password" class="form-control" id="adminCode" placeholder="ONLY ADMIN">
+            </div>
+            <button class="btn btn-primary w-100 mb-3" id="adminLogin">Ingresar</button>
+            <button class="btn btn-outline-secondary w-100" id="closeAdminForm">Cerrar</button>
+        </div>
+        
+        <!-- Admin Panel -->
+        <div class="admin-panel" id="adminPanel">
+            <h4 class="mb-3"><i class="fa-solid fa-user-shield me-2"></i>Panel de Administrador</h4>
+            
+            <div class="row mb-3">
+                <div class="col-md-6 mb-2">
+                    <button class="btn btn-success w-100" id="createRaffle" data-bs-toggle="modal" data-bs-target="#newRaffleModal">
+                        <i class="fa-solid fa-plus me-1"></i> Nueva Rifa
+                    </button>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <button class="btn btn-danger w-100" id="deleteRaffle">
+                        <i class="fa-solid fa-trash me-1"></i> Borrar Rifa
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6 mb-2">
+                    <button class="btn btn-warning w-100" id="resetRaffle">
+                        <i class="fa-solid fa-rotate me-1"></i> Resetear Rifa
+                    </button>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <button class="btn btn-info w-100 text-white" id="exportData">
+                        <i class="fa-solid fa-download me-1"></i> Exportar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-6 mb-2">
+                    <button class="btn btn-primary w-100" id="markAsSold">
+                        <i class="fa-solid fa-check-circle me-1"></i> Marcar Vendido
+                    </button>
+                </div>
+                <div class="col-md-6 mb-2">
+                    <button class="btn btn-secondary w-100" id="internalDraw">
+                        <i class="fa-solid fa-gift me-1"></i> Sorteo Interno
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-outline-primary w-100" id="backupData">
+                        <i class="fa-solid fa-floppy-disk me-1"></i> Backup Manual
+                    </button>
+                </div>
+            </div>
+            
+            <!-- NUEVO: Botón para subir imagen del premio -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <button class="btn btn-success w-100" id="uploadPrizeImage">
+                        <i class="fa-solid fa-image me-1"></i> Subir Imagen del Premio
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rifa Tabs Navigation -->
+        <div class="rifa-tabs" id="rifaTabs">
+            <!-- Las pestañas se generarán dinámicamente -->
+        </div>
+        
+        <!-- NUEVO: Sección de imagen del premio -->
+        <div class="card mb-4" id="prizeImageCard">
+            <div class="card-header">
+                <i class="fa-solid fa-gift me-2"></i>Premio del Sorteo
+            </div>
+            <div class="card-body">
+                <div class="prize-image-container">
+                    <div id="prizeImageWrapper" class="prize-image-wrapper">
+                        <!-- La imagen se cargará dinámicamente -->
+                        <div id="prizeImagePlaceholder" class="prize-image-placeholder">
+                            <i class="fa-solid fa-image"></i>
+                            <p class="text-muted">No hay imagen del premio</p>
+                            <p class="text-muted small">(Haz clic para subir una imagen)</p>
+                        </div>
+                        <img id="prizeImage" class="prize-image" style="display: none;">
+                        <div id="prizeImageActions" class="prize-image-actions" style="display: none;">
+                            <button class="prize-image-btn" id="changePrizeImage" title="Cambiar imagen">
+                                <i class="fa-solid fa-rotate"></i>
+                            </button>
+                            <button class="prize-image-btn" id="removePrizeImage" title="Eliminar imagen">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Current Rifa Display -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span id="currentRifaTitle">Rifa Actual</span>
+                <div>
+                    <button class="btn btn-sm btn-light me-2" id="randomPick">
+                        <i class="fa-solid fa-dice me-1"></i> Aleatorio
+                    </button>
+                    <button class="btn btn-sm btn-light" id="togglePanels">
+                        <i class="fa-solid fa-table-cells me-1"></i> Paneles
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Panel Selector -->
+                <div class="panel-selector" id="panelSelector">
+                    <h6 class="mb-3">Selecciona un Panel:</h6>
+                    <div id="panelBadges">
+                        <!-- Los badges se generarán dinámicamente -->
+                    </div>
+                </div>
+                
+                <!-- Rifa Information -->
+                <div class="rifa-summary">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 id="raffleName"></h4>
+                            <p id="raffleDescription" class="text-muted"></p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <p class="mb-1"><strong>Precio: </strong><span id="rafflePrice" class="fw-bold"></span></p>
+                            <p class="mb-1"><strong>Fecha: </strong><span id="raffleDate" class="fw-bold"></span></p>
+                            <div class="countdown" id="countdown">Faltan: 00D:00H:00M:00S</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="stats-grid" id="rifaStats">
+                    <!-- Las estadísticas se generarán dinámicamente -->
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="progress-container mb-4">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-available" id="progressAvailable" role="progressbar"></div>
+                        <div class="progress-bar progress-bar-separated" id="progressSeparated" role="progressbar"></div>
+                        <div class="progress-bar progress-bar-sold" id="progressSold" role="progressbar"></div>
+                    </div>
+                    <div class="legend mt-3 d-flex justify-content-between flex-wrap">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: #e9ecef;"></div>
+                            <span>Disponibles: <span id="countAvailable">100</span></span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(to right, var(--warning), #ffd351);"></div>
+                            <span>Separados: <span id="countSeparated">0</span></span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: linear-gradient(to right, var(--success), #34ce57);"></div>
+                            <span>Vendidos: <span id="countSold">0</span></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Number Grid - MODIFICADO PARA MOSTRAR SOLO 2 DÍGITOS -->
+                <div class="grid-container" id="numberGrid">
+                    <!-- Los números se generarán dinámicamente -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Participant Form -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fa-solid fa-user me-2"></i>Información del Participante
+            </div>
+            <div class="card-body">
+                <form id="customerForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firstName" class="form-label">Nombres *</label>
+                            <input type="text" class="form-control" id="firstName" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="lastName" class="form-label">Apellidos *</label>
+                            <input type="text" class="form-control" id="lastName" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="phoneNumber" class="form-label">Celular *</label>
+                            <input type="tel" class="form-control" id="phoneNumber" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="selectedNumber" class="form-label">Número Seleccionado</label>
+                            <input type="text" class="form-control" id="selectedNumber" readonly>
+                            <small class="text-muted">Click en un número disponible</small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="button" class="btn btn-buy-now btn-lg" id="payButton">
+                            <i class="fa-solid fa-whatsapp me-2"></i> PAGA AQUÍ 
+                        </button>
+                        <small class="text-center text-muted mt-2">
+                            Serás redirigido a WhatsApp para completar el pago
+                        </small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modales -->
+    <div class="modal fade" id="newRaffleModal" tabindex="-1" aria-labelledby="newRaffleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newRaffleModalLabel">Crear Nueva Rifa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="raffleForm">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="newRaffleName" class="form-label">Nombre del Sorteo *</label>
+                                <input type="text" class="form-control" id="newRaffleName" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="newRafflePrice" class="form-label">Precio por número *</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" class="form-control" id="newRafflePrice" min="100" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newRaffleDescription" class="form-label">Descripción del Premio *</label>
+                            <textarea class="form-control" id="newRaffleDescription" rows="3" required></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="newRaffleDate" class="form-label">Fecha del Sorteo *</label>
+                                <input type="datetime-local" class="form-control" id="newRaffleDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="newRafflePanels" class="form-label">Número de Paneles *</label>
+                                <select class="form-select" id="newRafflePanels" required>
+                                    <option value="1">1 Panel (100 números)</option>
+                                    <option value="2">2 Paneles (200 números)</option>
+                                    <option value="3">3 Paneles (300 números)</option>
+                                    <option value="4">4 Paneles (400 números)</option>
+                                    <option value="5">5 Paneles (500 números)</option>
+                                    <option value="6">6 Paneles (600 números)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newRaffleAdminPhone" class="form-label">WhatsApp para pagos</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fa-brands fa-whatsapp"></i></span>
+                                <input type="tel" class="form-control" id="newRaffleAdminPhone" placeholder="573215714548">
+                            </div>
+                            <small class="text-muted">Dejar vacío para usar el predeterminado</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveNewRaffle">Crear Rifa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- NUEVO: Modal para subir imagen del premio -->
+    <div class="modal fade" id="uploadPrizeImageModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content upload-modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Subir Imagen del Premio</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fa-solid fa-cloud-upload-alt upload-icon"></i>
+                        <h5>Arrastra y suelta tu imagen aquí</h5>
+                        <p class="text-muted">o haz clic para seleccionar un archivo</p>
+                        <p class="text-muted small">Formatos soportados: JPG, PNG, GIF (Max. 5MB)</p>
+                        <input type="file" id="imageFileInput" accept="image/*" style="display: none;">
+                    </div>
+                    
+                    <div class="upload-progress" id="uploadProgress">
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="text-center mt-2">Procesando imagen...</p>
+                    </div>
+                    
+                    <div class="text-center mt-3">
+                        <img id="imagePreview" class="upload-preview" alt="Vista previa">
+                    </div>
+                    
+                    <div class="row mt-4" id="uploadControls" style="display: none;">
+                        <div class="col-md-6">
+                            <button class="btn btn-secondary w-100" id="cancelUpload">
+                                <i class="fa-solid fa-times me-1"></i> Cancelar
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button class="btn btn-primary w-100" id="confirmUpload">
+                                <i class="fa-solid fa-check me-1"></i> Guardar Imagen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Payment Success Modal -->
+    <div class="modal fade" id="paymentSuccessModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">¡Participación Confirmada!</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-check-circle fa-4x text-success"></i>
+                    </div>
+                    <p>Tu solicitud ha sido enviada por WhatsApp. Por favor, realiza el pago a través de ese chat.</p>
+                    <p><strong>Número apartado:</strong> <span id="confirmedNumber" class="fw-bold"></span></p>
+                    <div class="alert alert-info mt-3">
+                        <i class="fa-solid fa-info-circle me-2"></i>
+                        Tu número quedará como <strong>SEPARADO</strong> hasta que el administrador confirme el pago y lo marque como <strong>VENDIDO</strong>.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <div class="floating-action">
+        <button class="btn btn-primary btn-lg rounded-circle shadow" id="quickPick" style="width: 60px; height: 60px;">
+            <i class="fa-solid fa-dice"></i>
+        </button>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+    <script>
+        // =================== CONFIGURACIÓN INICIAL ===================
+        const DEFAULT_ADMIN_CODE = "bombasorteos2025";
+        const DEFAULT_ADMIN_WHATSAPP = "573215714548";
+        
+        // =================== ESTRUCTURA DE DATOS MEJORADA ===================
+        let appData = {
+            version: "2.0",
+            lastBackup: new Date().toISOString(),
+            rifas: [],
+            currentRifaId: null,
+            settings: {
+                adminWhatsapp: DEFAULT_ADMIN_WHATSAPP,
+                maxPanels: 6
+            }
+        };
+        
+        let currentState = {
+            isAdmin: false,
+            isMarkingAsSold: false,
+            currentPanel: 1,
+            selectedNumbers: [],
+            currentRifa: null
+        };
+        
+        // Variables para manejo de imágenes
+        let currentImageFile = null;
+        let imageUploadModal = null;
+        
+        // =================== INICIALIZACIÓN ===================
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            initializeEventListeners();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Inicializar modal de subida de imagen
+            imageUploadModal = new bootstrap.Modal(document.getElementById('uploadPrizeImageModal'));
+        });
+        
+        function initializeApp() {
+            loadFromLocalStorage();
+            
+            // Si no hay rifas, crear una por defecto
+            if (appData.rifas.length === 0) {
+                createDefaultRifa();
+            }
+            
+            // Establecer rifa actual
+            if (!appData.currentRifaId && appData.rifas.length > 0) {
+                appData.currentRifaId = appData.rifas[0].id;
+            }
+            
+            currentState.currentRifa = appData.rifas.find(r => r.id === appData.currentRifaId);
+            
+            // Renderizar interfaz
+            renderRifaTabs();
+            renderCurrentRifa();
+            renderPrizeImage();
+            updateProgressBar();
+            
+            // Hacer backup automático cada 5 minutos
+            setInterval(() => {
+                saveToLocalStorage();
+                console.log("Backup automático realizado");
+            }, 300000);
+        }
+        
+        function createDefaultRifa() {
+            const defaultRifa = {
+                id: generateId(),
+                name: "Gran Sorteo Bomba",
+                description: "¡Participa por increíbles premios y diviértete con BombaSorteos!",
+                price: 5000,
+                date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 días desde hoy
+                panels: 1,
+                numbers: initializeNumbers(1),
+                participants: [],
+                createdAt: new Date().toISOString(),
+                adminWhatsapp: DEFAULT_ADMIN_WHATSAPP,
+                prizeImage: null // Nueva propiedad para la imagen
+            };
+            
+            appData.rifas.push(defaultRifa);
+            appData.currentRifaId = defaultRifa.id;
+        }
+        
+        function initializeNumbers(panels) {
+            const numbers = {};
+            
+            for (let panel = 1; panel <= panels; panel++) {
+                numbers[panel] = {};
+                
+                for (let i = 0; i < 100; i++) {
+                    const numberStr = i.toString().padStart(2, '0');
+                    const fullNumber = `${panel}${numberStr}`;
+                    
+                    numbers[panel][numberStr] = {
+                        number: fullNumber,       // Número completo con panel (101, 201, etc.)
+                        panel: panel,             // Panel al que pertenece (1, 2, 3...)
+                        displayNumber: numberStr, // Solo los 2 dígitos (00, 01, 02...)
+                        status: 'available',
+                        participant: null,
+                        selectedAt: null,
+                        soldAt: null
+                    };
+                }
+            }
+            
+            return numbers;
+        }
+        
+        // =================== FUNCIONES DE IMAGEN DEL PREMIO ===================
+        function renderPrizeImage() {
+            const prizeImage = document.getElementById('prizeImage');
+            const prizeImagePlaceholder = document.getElementById('prizeImagePlaceholder');
+            const prizeImageActions = document.getElementById('prizeImageActions');
+            
+            if (currentState.currentRifa && currentState.currentRifa.prizeImage) {
+                // Mostrar imagen
+                prizeImage.src = currentState.currentRifa.prizeImage;
+                prizeImage.style.display = 'block';
+                prizeImagePlaceholder.style.display = 'none';
+                prizeImageActions.style.display = 'flex';
+            } else {
+                // Mostrar placeholder
+                prizeImage.style.display = 'none';
+                prizeImagePlaceholder.style.display = 'flex';
+                prizeImageActions.style.display = 'none';
+            }
+        }
+        
+        function openImageUploadModal() {
+            // Resetear estado
+            resetUploadModal();
+            imageUploadModal.show();
+        }
+        
+        function resetUploadModal() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('uploadControls').style.display = 'none';
+            document.getElementById('uploadProgress').style.display = 'none';
+            document.getElementById('uploadArea').style.display = 'block';
+            currentImageFile = null;
+        }
+        
+        function handleImageUpload() {
+            const uploadArea = document.getElementById('uploadArea');
+            const fileInput = document.getElementById('imageFileInput');
+            const preview = document.getElementById('imagePreview');
+            const uploadControls = document.getElementById('uploadControls');
+            const uploadProgress = document.getElementById('uploadProgress');
+            
+            // Función para procesar el archivo
+            function processFile(file) {
+                if (!file.type.match('image.*')) {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Por favor, selecciona solo archivos de imagen.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    return;
+                }
+                
+                if (file.size > 5 * 1024 * 1024) { // 5MB límite
+                    Swal.fire({
+                        title: 'Archivo demasiado grande',
+                        text: 'La imagen no debe superar los 5MB.',
+                        icon: 'warning',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    return;
+                }
+                
+                currentImageFile = file;
+                
+                // Mostrar progreso
+                uploadArea.style.display = 'none';
+                uploadProgress.style.display = 'block';
+                const progressBar = uploadProgress.querySelector('.progress-bar');
+                progressBar.style.width = '50%';
+                
+                // Crear FileReader para leer la imagen
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Mostrar vista previa
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    
+                    // Simular progreso
+                    setTimeout(() => {
+                        progressBar.style.width = '100%';
+                        
+                        setTimeout(() => {
+                            uploadProgress.style.display = 'none';
+                            uploadControls.style.display = 'flex';
+                        }, 500);
+                    }, 500);
+                };
+                
+                reader.onerror = function() {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Error al leer el archivo.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                    resetUploadModal();
+                };
+                
+                reader.readAsDataURL(file);
+            }
+            
+            // Click en área de subida
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Drag and drop
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length) {
+                    processFile(e.dataTransfer.files[0]);
+                }
+            });
+            
+            // Input de archivo
+            fileInput.addEventListener('change', function() {
+                if (this.files.length) {
+                    processFile(this.files[0]);
+                }
+            });
+            
+            // Botón cancelar
+            document.getElementById('cancelUpload').addEventListener('click', function() {
+                resetUploadModal();
+                imageUploadModal.hide();
+            });
+            
+            // Botón confirmar
+            document.getElementById('confirmUpload').addEventListener('click', function() {
+                if (!currentImageFile) return;
+                
+                // Guardar imagen en la rifa actual
+                if (currentState.currentRifa) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // Comprimir imagen si es muy grande
+                        compressImage(e.target.result, function(compressedImage) {
+                            currentState.currentRifa.prizeImage = compressedImage;
+                            
+                            // Actualizar interfaz
+                            renderPrizeImage();
+                            saveToLocalStorage();
+                            
+                            // Cerrar modal y mostrar mensaje
+                            imageUploadModal.hide();
+                            Swal.fire({
+                                title: '¡Imagen guardada!',
+                                text: 'La imagen del premio se ha guardado correctamente.',
+                                icon: 'success',
+                                confirmButtonText: 'Aceptar'
+                            });
+                        });
+                    };
+                    reader.readAsDataURL(currentImageFile);
+                }
+            });
+        }
+        
+        function compressImage(dataUrl, callback) {
+            const img = new Image();
+            img.src = dataUrl;
+            
+            img.onload = function() {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                
+                // Calcular nuevo tamaño manteniendo proporción
+                let width = img.width;
+                let height = img.height;
+                const MAX_WIDTH = 1200;
+                const MAX_HEIGHT = 1200;
+                
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height = height * (MAX_WIDTH / width);
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width = width * (MAX_HEIGHT / height);
+                        height = MAX_HEIGHT;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                
+                // Dibujar imagen redimensionada
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Obtener imagen comprimida
+                const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                callback(compressedDataUrl);
+            };
+        }
+        
+        function removePrizeImage() {
+            if (!currentState.isAdmin) {
+                showAdminRequired();
+                return;
+            }
+            
+            Swal.fire({
+                title: '¿Eliminar imagen?',
+                text: '¿Estás seguro de eliminar la imagen del premio?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    currentState.currentRifa.prizeImage = null;
+                    renderPrizeImage();
+                    saveToLocalStorage();
+                    
+                    Swal.fire({
+                        title: '¡Imagen eliminada!',
+                        text: 'La imagen del premio ha sido eliminada.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+        }
+        
+        // =================== RENDERIZADO DE INTERFAZ ===================
+        function renderRifaTabs() {
+            const tabsContainer = document.getElementById('rifaTabs');
+            tabsContainer.innerHTML = '';
+            
+            appData.rifas.forEach((rifa, index) => {
+                const tab = document.createElement('button');
+                tab.className = `rifa-tab ${rifa.id === appData.currentRifaId ? 'active' : ''}`;
+                tab.dataset.rifaId = rifa.id;
+                tab.innerHTML = `
+                    ${rifa.name}
+                    <span class="rifa-tab-badge">${getRifaSoldCount(rifa)}</span>
+                `;
+                
+                tab.addEventListener('click', () => switchRifa(rifa.id));
+                tabsContainer.appendChild(tab);
+            });
+        }
+        
+        function renderCurrentRifa() {
+            if (!currentState.currentRifa) return;
+            
+            // Actualizar información básica
+            document.getElementById('currentRifaTitle').textContent = currentState.currentRifa.name;
+            document.getElementById('raffleName').textContent = currentState.currentRifa.name;
+            document.getElementById('raffleDescription').textContent = currentState.currentRifa.description;
+            document.getElementById('rafflePrice').textContent = `$${currentState.currentRifa.price.toLocaleString()}`;
+            document.getElementById('raffleDate').textContent = formatDate(currentState.currentRifa.date);
+            
+            // Renderizar selector de paneles
+            renderPanelSelector();
+            
+            // Renderizar estadísticas
+            renderStatistics();
+            
+            // Renderizar cuadrícula
+            renderNumberGrid();
+            
+            // Actualizar progreso
+            updateProgressBar();
+        }
+        
+        function renderPanelSelector() {
+            const selector = document.getElementById('panelSelector');
+            const badgesContainer = document.getElementById('panelBadges');
+            badgesContainer.innerHTML = '';
+            
+            for (let panel = 1; panel <= currentState.currentRifa.panels; panel++) {
+                const badge = document.createElement('div');
+                badge.className = `panel-badge ${panel === currentState.currentPanel ? 'active' : ''}`;
+                badge.textContent = panel;
+                badge.title = `Panel ${panel} (números ${panel}00-${panel}99)`;
+                badge.dataset.panel = panel;
+                
+                // Marcar panel como completado si todos están vendidos
+                const panelNumbers = Object.values(currentState.currentRifa.numbers[panel] || {});
+                const soldCount = panelNumbers.filter(n => n.status === 'sold').length;
+                if (soldCount === 100) {
+                    badge.classList.add('completed');
+                }
+                
+                badge.addEventListener('click', () => switchPanel(panel));
+                badgesContainer.appendChild(badge);
+            }
+            
+            // Mostrar/ocultar selector según número de paneles
+            selector.style.display = currentState.currentRifa.panels > 1 ? 'block' : 'none';
+        }
+        
+        function renderStatistics() {
+            const statsContainer = document.getElementById('rifaStats');
+            const stats = getRifaStatistics(currentState.currentRifa);
+            
+            statsContainer.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-value">${stats.total}</div>
+                    <div class="stat-label">Números Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--success);">${stats.sold}</div>
+                    <div class="stat-label">Vendidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" style="color: var(--warning);">${stats.separated}</div>
+                    <div class="stat-label">Separados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">$${(stats.sold * currentState.currentRifa.price).toLocaleString()}</div>
+                    <div class="stat-label">Recaudado</div>
+                </div>
+            `;
+        }
+        
+        // MODIFICADO: Ahora muestra solo 2 dígitos en la cuadrícula
+        function renderNumberGrid() {
+            const grid = document.getElementById('numberGrid');
+            grid.innerHTML = '';
+            
+            const panelNumbers = currentState.currentRifa.numbers[currentState.currentPanel];
+            if (!panelNumbers) return;
+            
+            // Ordenar números del 00 al 99
+            const sortedNumbers = Object.values(panelNumbers)
+                .sort((a, b) => parseInt(a.displayNumber) - parseInt(b.displayNumber));
+            
+            sortedNumbers.forEach(numData => {
+                const gridItem = document.createElement('div');
+                gridItem.className = `grid-item ${numData.status}`;
+                gridItem.dataset.number = numData.number;           // Número completo (101, 201, etc.)
+                gridItem.dataset.displayNumber = numData.displayNumber; // Solo 2 dígitos (01, 02, etc.)
+                gridItem.dataset.panel = numData.panel;
+                
+                // Mostrar solo los 2 dígitos en el centro
+                gridItem.innerHTML = `
+                    <div class="grid-item-number">${numData.displayNumber}</div>
+                `;
+                
+                // Mostrar indicador del panel solo si hay más de 1 panel
+                if (currentState.currentRifa.panels > 1) {
+                    const panelIndicator = document.createElement('div');
+                    panelIndicator.className = 'grid-item-panel';
+                    panelIndicator.textContent = `P${numData.panel}`;
+                    panelIndicator.title = `Panel ${numData.panel}`;
+                    gridItem.appendChild(panelIndicator);
+                }
+                
+                // Agregar tooltip con información completa
+                gridItem.title = `Número: ${numData.number} (Panel ${numData.panel})`;
+                
+                if (numData.status === 'sold' && numData.participant) {
+                    const badge = document.createElement('div');
+                    badge.className = 'winner-badge';
+                    badge.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    badge.title = `Vendido a: ${numData.participant.firstName} ${numData.participant.lastName}`;
+                    gridItem.appendChild(badge);
+                }
+                
+                gridItem.addEventListener('click', () => handleNumberClick(numData));
+                grid.appendChild(gridItem);
+            });
+        }
+        
+        // =================== MANEJO DE EVENTOS ===================
+        function initializeEventListeners() {
+            // Admin
+            document.getElementById('adminToggle').addEventListener('click', toggleAdminForm);
+            document.getElementById('closeAdminForm').addEventListener('click', closeAdminForm);
+            document.getElementById('adminLogin').addEventListener('click', handleAdminLogin);
+            
+            // Admin buttons
+            document.getElementById('createRaffle').addEventListener('click', () => {
+                if (!currentState.isAdmin) {
+                    showAdminRequired();
+                    return;
+                }
+            });
+            
+            document.getElementById('deleteRaffle').addEventListener('click', handleDeleteRaffle);
+            document.getElementById('resetRaffle').addEventListener('click', handleResetRaffle);
+            document.getElementById('exportData').addEventListener('click', handleExportData);
+            document.getElementById('markAsSold').addEventListener('click', toggleMarkAsSold);
+            document.getElementById('internalDraw').addEventListener('click', handleInternalDraw);
+            document.getElementById('saveNewRaffle').addEventListener('click', handleSaveNewRaffle);
+            document.getElementById('backupData').addEventListener('click', handleManualBackup);
+            
+            // NUEVO: Eventos para imágenes
+            document.getElementById('uploadPrizeImage').addEventListener('click', function() {
+                if (!currentState.isAdmin) {
+                    showAdminRequired();
+                    return;
+                }
+                openImageUploadModal();
+            });
+            
+            document.getElementById('changePrizeImage').addEventListener('click', function() {
+                if (!currentState.isAdmin) {
+                    showAdminRequired();
+                    return;
+                }
+                openImageUploadModal();
+            });
+            
+            document.getElementById('removePrizeImage').addEventListener('click', removePrizeImage);
+            
+            // Permitir a usuarios no-admin hacer clic en el placeholder para ver la imagen
+            document.getElementById('prizeImagePlaceholder').addEventListener('click', function() {
+                if (currentState.currentRifa && currentState.currentRifa.prizeImage) {
+                    // Si hay imagen, mostrar en modal grande
+                    Swal.fire({
+                        html: `<img src="${currentState.currentRifa.prizeImage}" style="max-width: 100%; border-radius: 10px;">`,
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        width: '80%'
+                    });
+                } else if (currentState.isAdmin) {
+                    // Si es admin y no hay imagen, abrir modal de subida
+                    openImageUploadModal();
+                } else {
+                    // Si no es admin y no hay imagen, mostrar mensaje
+                    Swal.fire({
+                        title: 'Sin imagen',
+                        text: 'Aún no hay imagen del premio disponible.',
+                        icon: 'info',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+            
+            // Inicializar modal de subida de imagen
+            handleImageUpload();
+            
+            // Customer
+            document.getElementById('randomPick').addEventListener('click', handleRandomPick);
+            document.getElementById('quickPick').addEventListener('click', handleRandomPick);
+            document.getElementById('payButton').addEventListener('click', handleWhatsAppRedirect);
+            document.getElementById('togglePanels').addEventListener('click', togglePanelSelector);
+        }
+        
+        function handleNumberClick(numData) {
+            if (currentState.isAdmin && currentState.isMarkingAsSold) {
+                handleAdminMarkAsSold(numData);
+                return;
+            }
+            
+            // Flujo normal para participantes
+            if (numData.status === 'available') {
+                selectNumber(numData);
+            } else if (numData.status === 'separated') {
+                if (currentState.selectedNumbers.includes(numData.number)) {
+                    deselectNumber(numData);
+                } else {
+                    Swal.fire({
+                        title: 'Número separado',
+                        text: 'Este número ya está siendo procesado por otro participante.',
+                        icon: 'info',
+                        confirmButtonText: 'Entendido'
+                    });
+                }
+            } else if (numData.status === 'sold') {
+                Swal.fire({
+                    title: 'Número vendido',
+                    text: `El número ${numData.number} ya fue vendido.`,
+                    icon: 'info',
+                    confirmButtonText: 'Entendido'
+                });
+            }
+        }
+        
+        function selectNumber(numData) {
+            // Limitar a 1 número seleccionado a la vez
+            if (currentState.selectedNumbers.length >= 1) {
+                Swal.fire({
+                    title: 'Límite alcanzado',
+                    text: 'Solo puedes seleccionar 1 número a la vez.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido'
+                });
+                return;
+            }
+            
+            // Deseleccionar número anterior si existe
+            if (currentState.selectedNumbers.length > 0) {
+                const prevNumber = currentState.selectedNumbers[0];
+                updateNumberStatus(prevNumber, 'available');
+            }
+            
+            // Seleccionar nuevo número
+            currentState.selectedNumbers = [numData.number];
+            updateNumberStatus(numData.number, 'separated');
+            
+            // Mostrar el número completo en el formulario (ej: 101, 201, etc.)
+            document.getElementById('selectedNumber').value = numData.number;
+            updateProgressBar();
+        }
+        
+        function deselectNumber(numData) {
+            currentState.selectedNumbers = currentState.selectedNumbers.filter(n => n !== numData.number);
+            updateNumberStatus(numData.number, 'available');
+            document.getElementById('selectedNumber').value = '';
+            updateProgressBar();
+        }
+        
+        function handleAdminMarkAsSold(numData) {
+            if (numData.status === 'sold') {
+                Swal.fire({
+                    title: 'Ya vendido',
+                    text: 'Este número ya está marcado como vendido.',
+                    icon: 'info',
+                    confirmButtonText: 'Entendido'
+                });
+                return;
+            }
+            
+            Swal.fire({
+                title: 'Marcar como vendido',
+                text: `¿Marcar el número ${numData.number} como vendido?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, marcar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    updateNumberStatus(numData.number, 'sold', {
+                        firstName: "Admin",
+                        lastName: "Venta Directa",
+                        phoneNumber: "0000000000"
+                    });
+                    
+                    updateProgressBar();
+                    renderNumberGrid();
+                    
+                    Swal.fire({
+                        title: '¡Marcado!',
+                        text: `El número ${numData.number} ha sido marcado como vendido.`,
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+        }
+        
+        // =================== FUNCIONES DE NEGOCIO ===================
+        function switchRifa(rifaId) {
+            appData.currentRifaId = rifaId;
+            currentState.currentRifa = appData.rifas.find(r => r.id === rifaId);
+            currentState.currentPanel = 1;
+            currentState.selectedNumbers = [];
+            
+            renderRifaTabs();
+            renderCurrentRifa();
+            renderPrizeImage();
+            saveToLocalStorage();
+        }
+        
+        function switchPanel(panel) {
+            currentState.currentPanel = panel;
+            renderPanelSelector();
+            renderNumberGrid();
+        }
+        
+        function handleRandomPick() {
+            // Encontrar números disponibles en el panel actual
+            const panelNumbers = currentState.currentRifa.numbers[currentState.currentPanel];
+            const availableNumbers = Object.values(panelNumbers)
+                .filter(n => n.status === 'available')
+                .map(n => n.number); // Usamos el número completo para la selección
+            
+            if (availableNumbers.length === 0) {
+                Swal.fire({
+                    title: 'Sin disponibles',
+                    text: 'No hay números disponibles en este panel.',
+                    icon: 'info',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+            
+            // Seleccionar aleatoriamente
+            const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+            const randomNumber = availableNumbers[randomIndex];
+            const numData = findNumberData(randomNumber);
+            
+            if (numData) {
+                selectNumber(numData);
+                
+                // Resaltar visualmente
+                const gridItem = document.querySelector(`.grid-item[data-number="${randomNumber}"]`);
+                if (gridItem) {
+                    gridItem.classList.add('highlight');
+                    setTimeout(() => gridItem.classList.remove('highlight'), 2000);
+                }
+            }
+        }
+        
+        function handleWhatsAppRedirect() {
+            if (currentState.selectedNumbers.length === 0) {
+                Swal.fire({
+                    title: 'Selecciona un número',
+                    text: 'Por favor, selecciona un número antes de proceder al pago.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido'
+                });
+                return;
+            }
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            
+            if (!firstName || !lastName || !phoneNumber) {
+                Swal.fire({
+                    title: 'Datos incompletos',
+                    text: 'Por favor, completa todos los campos del formulario.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+            
+            const selectedNumber = currentState.selectedNumbers[0];
+            const numData = findNumberData(selectedNumber);
+            const whatsappNumber = currentState.currentRifa.adminWhatsapp || appData.settings.adminWhatsapp;
+            
+            // Crear mensaje para WhatsApp
+            let message = 
+                `*CONFIRMAR PARTICIPACIÓN - ${currentState.currentRifa.name}*\n\n` +
+                `Hola, quiero comprar la participación para el sorteo.\n\n` +
+                `*Número Seleccionado:* ${selectedNumber}\n` +
+                `*Panel:* ${numData.panel}\n` +
+                `*Precio:* $${currentState.currentRifa.price.toLocaleString()}\n` +
+                `*Nombre:* ${firstName} ${lastName}\n` +
+                `*Mi Celular:* ${phoneNumber}\n`;
+            
+            // Agregar descripción del premio
+            if (currentState.currentRifa.description) {
+                message += `\n*Premio:* ${currentState.currentRifa.description}`;
+            }
+            
+            message += `\n\nPor favor, envíame los datos de pago.`;
+            
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+            
+            // Confirmar con el usuario
+            Swal.fire({
+                title: '¿Continuar a WhatsApp?',
+                html: `Serás redirigido a WhatsApp para completar el pago del número <strong>${selectedNumber}</strong>.`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, ir a WhatsApp',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Guardar datos del participante (como separado)
+                    updateNumberStatus(selectedNumber, 'separated', {
+                        firstName,
+                        lastName,
+                        phoneNumber
+                    });
+                    
+                    // Abrir WhatsApp
+                    window.open(whatsappUrl, '_blank');
+                    
+                    // Mostrar confirmación
+                    document.getElementById('confirmedNumber').textContent = selectedNumber;
+                    const successModal = new bootstrap.Modal(document.getElementById('paymentSuccessModal'));
+                    successModal.show();
+                    
+                    // Limpiar formulario
+                    document.getElementById('customerForm').reset();
+                    document.getElementById('selectedNumber').value = '';
+                    currentState.selectedNumbers = [];
+                    
+                    saveToLocalStorage();
+                }
+            });
+        }
+        
+        // =================== FUNCIONES DE ADMINISTRADOR ===================
+        function handleAdminLogin() {
+            const codeInput = document.getElementById('adminCode').value;
+            
+            if (codeInput === DEFAULT_ADMIN_CODE) {
+                currentState.isAdmin = true;
+                document.getElementById('adminForm').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+                
+                Swal.fire({
+                    title: 'Acceso concedido',
+                    text: 'Modo administrador activado.',
+                    icon: 'success',
+                    confirmButtonText: 'Continuar'
+                });
+            } else {
+                Swal.fire({
+                    title: 'Acceso denegado',
+                    text: 'Código incorrecto.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+            }
+        }
+        
+        function handleSaveNewRaffle() {
+            const name = document.getElementById('newRaffleName').value.trim();
+            const description = document.getElementById('newRaffleDescription').value.trim();
+            const price = parseInt(document.getElementById('newRafflePrice').value);
+            const date = new Date(document.getElementById('newRaffleDate').value);
+            const panels = parseInt(document.getElementById('newRafflePanels').value);
+            const adminPhone = document.getElementById('newRaffleAdminPhone').value.trim();
+            
+            // Validaciones
+            if (!name || !description || isNaN(price) || price < 100 || isNaN(date.getTime())) {
+                Swal.fire({
+                    title: 'Datos inválidos',
+                    text: 'Por favor, completa todos los campos correctamente.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+            
+            const newRaffle = {
+                id: generateId(),
+                name,
+                description,
+                price,
+                date,
+                panels,
+                numbers: initializeNumbers(panels),
+                participants: [],
+                createdAt: new Date().toISOString(),
+                adminWhatsapp: adminPhone || DEFAULT_ADMIN_WHATSAPP,
+                prizeImage: null // Inicializar sin imagen
+            };
+            
+            // Agregar a la lista
+            appData.rifas.push(newRaffle);
+            
+            // Establecer como rifa actual
+            appData.currentRifaId = newRaffle.id;
+            currentState.currentRifa = newRaffle;
+            currentState.currentPanel = 1;
+            currentState.selectedNumbers = [];
+            
+            // Actualizar interfaz
+            renderRifaTabs();
+            renderCurrentRifa();
+            renderPrizeImage();
+            saveToLocalStorage();
+            
+            // Cerrar modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newRaffleModal'));
+            modal.hide();
+            
+            // Limpiar formulario
+            document.getElementById('raffleForm').reset();
+            
+            Swal.fire({
+                title: '¡Rifa creada!',
+                html: `La rifa <strong>${name}</strong> ha sido creada con ${panels} panel(es).`,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+        
+        function handleDeleteRaffle() {
+            if (!currentState.isAdmin) {
+                showAdminRequired();
+                return;
+            }
+            
+            if (appData.rifas.length <= 1) {
+                Swal.fire({
+                    title: 'No se puede eliminar',
+                    text: 'Debe haber al menos una rifa activa.',
+                    icon: 'warning',
+                    confirmButtonText: 'Entendido'
+                });
+                return;
+            }
+            
+            Swal.fire({
+                title: '¿Eliminar rifa?',
+                html: `¿Estás seguro de eliminar la rifa <strong>${currentState.currentRifa.name}</strong>?<br>Esta acción no se puede deshacer.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Encontrar índice de la rifa actual
+                    const currentIndex = appData.rifas.findIndex(r => r.id === currentState.currentRifa.id);
+                    
+                    // Eliminar rifa
+                    appData.rifas.splice(currentIndex, 1);
+                    
+                    // Establecer nueva rifa actual
+                    appData.currentRifaId = appData.rifas[0]?.id || null;
+                    currentState.currentRifa = appData.rifas[0] || null;
+                    currentState.currentPanel = 1;
+                    currentState.selectedNumbers = [];
+                    
+                    // Actualizar interfaz
+                    renderRifaTabs();
+                    if (currentState.currentRifa) {
+                        renderCurrentRifa();
+                        renderPrizeImage();
+                    }
+                    saveToLocalStorage();
+                    
+                    Swal.fire({
+                        title: '¡Eliminada!',
+                        text: 'La rifa ha sido eliminada correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+        }
+        
+        function handleResetRaffle() {
+            if (!currentState.isAdmin) {
+                showAdminRequired();
+                return;
+            }
+            
+            Swal.fire({
+                title: '¿Restablecer rifa?',
+                html: `¿Restablecer todos los números de <strong>${currentState.currentRifa.name}</strong> a disponibles?<br>Se perderán todos los participantes.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, restablecer',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Reinicializar números
+                    currentState.currentRifa.numbers = initializeNumbers(currentState.currentRifa.panels);
+                    currentState.currentRifa.participants = [];
+                    
+                    // Limpiar selección actual
+                    currentState.selectedNumbers = [];
+                    document.getElementById('selectedNumber').value = '';
+                    
+                    // Actualizar interfaz
+                    renderCurrentRifa();
+                    saveToLocalStorage();
+                    
+                    Swal.fire({
+                        title: '¡Restablecida!',
+                        text: 'La rifa ha sido restablecida correctamente.',
+                        icon: 'success',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
+            });
+        }
+        
+        function toggleMarkAsSold() {
+            if (!currentState.isAdmin) {
+                showAdminRequired();
+                return;
+            }
+            
+            currentState.isMarkingAsSold = !currentState.isMarkingAsSold;
+            const button = document.getElementById('markAsSold');
+            
+            if (currentState.isMarkingAsSold) {
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-danger');
+                button.innerHTML = '<i class="fa-solid fa-xmark me-1"></i> Cancelar';
+                
+                Swal.fire({
+                    title: 'Modo activado',
+                    text: 'Haz clic en cualquier número para marcarlo como vendido.',
+                    icon: 'info',
+                    confirmButtonText: 'Entendido'
+                });
+            } else {
+                button.classList.remove('btn-danger');
+                button.classList.add('btn-primary');
+                button.innerHTML = '<i class="fa-solid fa-check-circle me-1"></i> Marcar Vendido';
+            }
+        }
+        
+        function handleInternalDraw() {
+            if (!currentState.isAdmin) {
+                showAdminRequired();
+                return;
+            }
+            
+            // Obtener números vendidos
+            const soldNumbers = [];
+            for (let panel = 1; panel <= currentState.currentRifa.panels; panel++) {
+                const panelNumbers = currentState.currentRifa.numbers[panel];
+                Object.values(panelNumbers).forEach(num => {
+                    if (num.status === 'sold' && num.participant) {
+                        soldNumbers.push({
+                            number: num.number,
+                            participant: num.participant
+                        });
+                    }
+                });
+            }
+            
+            if (soldNumbers.length === 0) {
+                Swal.fire({
+                    title: 'Sin participantes',
+                    text: 'No hay números vendidos para realizar el sorteo.',
+                    icon: 'warning',
+                    confirmButtonText: 'Aceptar'
+                });
+                return;
+            }
+            
+            // Seleccionar ganador aleatorio
+            const randomIndex = Math.floor(Math.random() * soldNumbers.length);
+            const winner = soldNumbers[randomIndex];
+            
+            // Mostrar resultado
+            Swal.fire({
+                title: '¡GANADOR SELECCIONADO!',
+                html: `
+                    <div class="text-center">
+                        <div style="font-size: 4rem; font-weight: bold; color: var(--success);">
+                            ${winner.number}
+                        </div>
+                        <div class="mt-3">
+                            <strong>${winner.participant.firstName} ${winner.participant.lastName}</strong><br>
+                            ${winner.participant.phoneNumber}
+                        </div>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+        
+        function handleExportData() {
+            if (!currentState.isAdmin) {
+                showAdminRequired();
+                return;
+            }
+            
+            const exportData = {
+                rifa: currentState.currentRifa,
+                exportDate: new Date().toISOString()
+            };
+            
+            const jsonStr = JSON.stringify(exportData, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            
+            a.href = url;
+            a.download = `rifa-${currentState.currentRifa.name.toLowerCase().replace(/\s+/g, '-')}-${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function handleManualBackup() {
+            saveToLocalStorage();
+            Swal.fire({
+                title: 'Backup realizado',
+                text: 'Todos los datos han sido guardados correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+        
+        // =================== FUNCIONES DE UTILIDAD ===================
+        function updateNumberStatus(number, status, participant = null) {
+            // Encontrar el número en la estructura de datos
+            const panel = parseInt(number.toString()[0]);
+            const displayNumber = number.toString().slice(1);
+            
+            if (!currentState.currentRifa.numbers[panel] || 
+                !currentState.currentRifa.numbers[panel][displayNumber]) {
+                console.error('Número no encontrado:', number);
+                return;
+            }
+            
+            const numData = currentState.currentRifa.numbers[panel][displayNumber];
+            numData.status = status;
+            
+            if (participant && status === 'sold') {
+                numData.participant = participant;
+                numData.soldAt = new Date().toISOString();
+                
+                // Agregar a lista de participantes si no existe
+                if (!currentState.currentRifa.participants.some(p => 
+                    p.phoneNumber === participant.phoneNumber && p.number === number)) {
+                    currentState.currentRifa.participants.push({
+                        ...participant,
+                        number: number,
+                        soldAt: numData.soldAt,
+                        panel: panel
+                    });
+                }
+            } else if (participant && status === 'separated') {
+                numData.participant = participant;
+                numData.selectedAt = new Date().toISOString();
+            } else if (status === 'available') {
+                numData.participant = null;
+                numData.selectedAt = null;
+            }
+        }
+        
+        function findNumberData(number) {
+            const panel = parseInt(number.toString()[0]);
+            const displayNumber = number.toString().slice(1);
+            
+            if (currentState.currentRifa.numbers[panel] && 
+                currentState.currentRifa.numbers[panel][displayNumber]) {
+                return currentState.currentRifa.numbers[panel][displayNumber];
+            }
+            return null;
+        }
+        
+        function updateProgressBar() {
+            if (!currentState.currentRifa) return;
+            
+            const stats = getRifaStatistics(currentState.currentRifa);
+            const total = stats.total;
+            
+            // Actualizar contadores
+            document.getElementById('countAvailable').textContent = stats.available;
+            document.getElementById('countSeparated').textContent = stats.separated;
+            document.getElementById('countSold').textContent = stats.sold;
+            
+            // Actualizar barras de progreso
+            const availablePercent = (stats.available / total) * 100;
+            const separatedPercent = (stats.separated / total) * 100;
+            const soldPercent = (stats.sold / total) * 100;
+            
+            document.getElementById('progressAvailable').style.width = `${availablePercent}%`;
+            document.getElementById('progressSeparated').style.width = `${separatedPercent}%`;
+            document.getElementById('progressSold').style.width = `${soldPercent}%`;
+        }
+        
+        function getRifaStatistics(rifa) {
+            let total = 0;
+            let available = 0;
+            let separated = 0;
+            let sold = 0;
+            
+            for (let panel = 1; panel <= rifa.panels; panel++) {
+                if (!rifa.numbers[panel]) continue;
+                
+                const panelNumbers = Object.values(rifa.numbers[panel]);
+                total += panelNumbers.length;
+                
+                panelNumbers.forEach(num => {
+                    if (num.status === 'available') available++;
+                    if (num.status === 'separated') separated++;
+                    if (num.status === 'sold') sold++;
+                });
+            }
+            
+            return { total, available, separated, sold };
+        }
+        
+        function getRifaSoldCount(rifa) {
+            return rifa.participants.length;
+        }
+        
+        function updateCountdown() {
+            if (!currentState.currentRifa) return;
+            
+            const now = new Date();
+            const raffleTime = new Date(currentState.currentRifa.date);
+            const diff = raffleTime - now;
+            
+            if (diff <= 0) {
+                document.getElementById('countdown').textContent = "¡SORTEO FINALIZADO!";
+                document.getElementById('countdown').style.color = "var(--danger)";
+                return;
+            }
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('countdown').textContent = 
+                `Faltan: ${days}D ${hours}H ${minutes}M ${seconds}S`;
+        }
+        
+        function toggleAdminForm() {
+            const adminForm = document.getElementById('adminForm');
+            adminForm.style.display = 'block';
+        }
+        
+        function closeAdminForm() {
+            document.getElementById('adminForm').style.display = 'none';
+            document.getElementById('adminCode').value = '';
+        }
+        
+        function togglePanelSelector() {
+            const selector = document.getElementById('panelSelector');
+            selector.style.display = selector.style.display === 'none' ? 'block' : 'none';
+        }
+        
+        function showAdminRequired() {
+            Swal.fire({
+                title: 'Acceso requerido',
+                text: 'Necesitas permisos de administrador para esta acción.',
+                icon: 'warning',
+                confirmButtonText: 'Entendido'
+            });
+        }
+        
+        // =================== ALMACENAMIENTO MEJORADO ===================
+        function saveToLocalStorage() {
+            try {
+                appData.lastBackup = new Date().toISOString();
+                localStorage.setItem('bombaSorteosData', JSON.stringify(appData));
+                localStorage.setItem('bombaSorteosBackup', JSON.stringify(appData)); // Backup extra
+                console.log('Datos guardados correctamente');
+            } catch (error) {
+                console.error('Error guardando datos:', error);
+                // Intentar guardar con datos más pequeños
+                try {
+                    const compressedData = {
+                        ...appData,
+                        // Remover datos temporales si es necesario
+                    };
+                    localStorage.setItem('bombaSorteosData', JSON.stringify(compressedData));
+                } catch (e) {
+                    console.error('No se pudo guardar:', e);
+                    alert('Error: No se pudieron guardar los datos. El almacenamiento local puede estar lleno.');
+                }
+            }
+        }
+        
+        function loadFromLocalStorage() {
+            try {
+                const savedData = localStorage.getItem('bombaSorteosData');
+                const backupData = localStorage.getItem('bombaSorteosBackup');
+                
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    
+                    // Migración de versiones anteriores
+                    if (!parsed.version || parsed.version < "2.0") {
+                        migrateOldData(parsed);
+                    } else {
+                        appData = parsed;
+                    }
+                } else if (backupData) {
+                    // Intentar cargar del backup
+                    appData = JSON.parse(backupData);
+                }
+                
+                // Convertir fechas string a objetos Date
+                appData.rifas.forEach(rifa => {
+                    rifa.date = new Date(rifa.date);
+                    
+                    // Asegurar que todos los números tengan la estructura correcta
+                    if (!rifa.numbers || typeof rifa.numbers !== 'object') {
+                        rifa.numbers = initializeNumbers(rifa.panels || 1);
+                    }
+                    
+                    // Asegurar que exista la propiedad prizeImage
+                    if (!rifa.prizeImage) {
+                        rifa.prizeImage = null;
+                    }
+                });
+                
+                console.log('Datos cargados:', appData);
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                // Si hay error, empezar con datos limpios
+                appData = {
+                    version: "2.0",
+                    lastBackup: new Date().toISOString(),
+                    rifas: [],
+                    currentRifaId: null,
+                    settings: {
+                        adminWhatsapp: DEFAULT_ADMIN_WHATSAPP,
+                        maxPanels: 6
+                    }
+                };
+            }
+        }
+        
+        function migrateOldData(oldData) {
+            // Convertir datos de versión anterior a nueva estructura
+            console.log('Migrando datos antiguos...');
+            
+            if (oldData.raffleData) {
+                const oldRaffle = oldData.raffleData;
+                const migratedRifa = {
+                    id: generateId(),
+                    name: oldRaffle.name || "Rifa Migrada",
+                    description: oldRaffle.description || "",
+                    price: oldRaffle.price || 5000,
+                    date: new Date(oldRaffle.date || Date.now()),
+                    panels: 1,
+                    numbers: initializeNumbers(1),
+                    participants: [],
+                    createdAt: new Date().toISOString(),
+                    adminWhatsapp: DEFAULT_ADMIN_WHATSAPP,
+                    prizeImage: null
+                };
+                
+                // Migrar participantes si existen
+                if (oldData.participants && Array.isArray(oldData.participants)) {
+                    oldData.participants.forEach(participant => {
+                        const number = participant.number.toString().padStart(2, '0');
+                        migratedRifa.numbers[1][number] = {
+                            number: `1${number}`,
+                            panel: 1,
+                            displayNumber: number,
+                            status: 'sold',
+                            participant: {
+                                firstName: participant.firstName,
+                                lastName: participant.lastName,
+                                phoneNumber: participant.phoneNumber
+                            },
+                            soldAt: participant.timestamp || new Date().toISOString()
+                        };
+                        
+                        migratedRifa.participants.push({
+                            ...participant,
+                            number: `1${number}`,
+                            soldAt: participant.timestamp,
+                            panel: 1
+                        });
+                    });
+                }
+                
+                appData.rifas = [migratedRifa];
+                appData.currentRifaId = migratedRifa.id;
+            }
+        }
+        
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).substr(2);
+        }
+        
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('es-CO', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+    </script>
+</body>
+</html>
